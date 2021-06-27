@@ -1,0 +1,8 @@
+srv_host = "localhost"
+srv_port = ":8080"
+
+db_host = "localhost"
+db_port = "5436"
+db_user = "postgres"
+db_password = "qwerty"
+db_name = "postgres"

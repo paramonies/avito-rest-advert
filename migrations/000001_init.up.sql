@@ -1,0 +1,8 @@
+CREATE TABLE adverts (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    price INTEGER DEFAULT 0,
+    pictures VARCHAR(1000),
+    createdAt TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
