@@ -252,21 +252,23 @@ func TestHandler_getList(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		c := gomock.NewController(t)
-		defer c.Finish()
+		t.Run(test.name, func(t *testing.T) {
+			c := gomock.NewController(t)
+			defer c.Finish()
 
-		mockService := mock.NewMockService(c)
-		test.mockBehavior(mockService, test.inputPage, test.inputOrderBy)
+			mockService := mock.NewMockService(c)
+			test.mockBehavior(mockService, test.inputPage, test.inputOrderBy)
 
-		handler := NewHandler(mockService)
-		router := gin.New()
-		router.GET("/list", handler.getList)
+			handler := NewHandler(mockService)
+			router := gin.New()
+			router.GET("/list", handler.getList)
 
-		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", test.inputURL, nil)
-		router.ServeHTTP(w, req)
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("GET", test.inputURL, nil)
+			router.ServeHTTP(w, req)
 
-		assert.Equal(t, w.Code, test.expectedResponseCode)
-		assert.Equal(t, w.Body.String(), test.expectedResponseBody)
+			assert.Equal(t, w.Code, test.expectedResponseCode)
+			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
+		})
 	}
 }

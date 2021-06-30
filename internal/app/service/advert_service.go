@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 	"unicode/utf8"
 
@@ -44,11 +43,11 @@ func (s *AdvertService) GetAdvertList(page int, orderBy string) ([]model.Advert,
 func validate(advert model.Advert) error {
 	var messageErrors []string
 	if utf8.RuneCountInString(advert.Name) > 200 {
-		messageErrors = append(messageErrors, `length of the field "name" should not exceed 10`)
+		messageErrors = append(messageErrors, `length of the field "name" should not exceed 200`)
 	}
 
 	if utf8.RuneCountInString(advert.Description) > 1000 {
-		messageErrors = append(messageErrors, `length of the field "description" should not exceed 20`)
+		messageErrors = append(messageErrors, `length of the field "description" should not exceed 1000`)
 	}
 
 	if advert.Price < 0 {
@@ -84,18 +83,15 @@ func checkFields(advert model.Advert, fields []string) model.Advert {
 	}
 
 	if contains(fields, "description") && contains(fields, "pictures") {
-		fmt.Println("!!!inside service description && pictures")
 		return advert
 	}
 
 	if contains(fields, "pictures") {
-		fmt.Println("!!!inside service pictures")
 		advert.Description = ""
 		return advert
 	}
 
 	if contains(fields, "description") {
-		fmt.Println("!!!inside service description")
 		advert.Pictures = ""
 		return advert
 	}
