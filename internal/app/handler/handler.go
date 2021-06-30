@@ -11,10 +11,10 @@ import (
 )
 
 type Handler struct {
-	service *service.Service
+	service service.Service
 }
 
-func NewHandler(service *service.Service) *Handler {
+func NewHandler(service service.Service) *Handler {
 	return &Handler{service: service}
 }
 
@@ -37,7 +37,7 @@ func (h *Handler) createAdvert(ctx *gin.Context) {
 	var input model.Advert
 
 	if err := ctx.BindJSON(&input); err != nil {
-		SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		SendErrorResponse(ctx, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
@@ -53,6 +53,7 @@ func (h *Handler) createAdvert(ctx *gin.Context) {
 }
 
 func (h *Handler) getAdvertById(ctx *gin.Context) {
+	//..../get/:id?fields=description,pictures
 	id := ctx.Param("id")
 	advertId, err := strconv.Atoi(id)
 	if err != nil {
@@ -80,7 +81,7 @@ func (h *Handler) getAdvertById(ctx *gin.Context) {
 
 	advert, err := h.service.GetAdvertById(advertId, fieldsValid)
 	if err != nil {
-		SendErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -88,6 +89,7 @@ func (h *Handler) getAdvertById(ctx *gin.Context) {
 }
 
 func (h *Handler) getList(ctx *gin.Context) {
+	//..../list?page=2&order_by=createdat_desc
 	pageStr := ctx.Query("page")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page < 1 {
@@ -110,7 +112,7 @@ func (h *Handler) getList(ctx *gin.Context) {
 
 	adverts, err := h.service.GetAdvertList(page, orderBy)
 	if err != nil {
-		SendErrorResponse(ctx, http.StatusOK, err.Error())
+		SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 

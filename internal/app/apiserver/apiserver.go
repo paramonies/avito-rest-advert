@@ -19,8 +19,8 @@ func Start(config *Config) error {
 	}
 	defer db.Close()
 
-	repo := repository.NewRepository(db)
-	service := service.NewService((repo))
+	repo := repository.NewAdvertRepository(db)
+	service := service.NewAdvertService(repo)
 	handler := handler.NewHandler(service)
 
 	srv := new(Server)

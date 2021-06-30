@@ -17,7 +17,7 @@ func TestCreateAdvert(t *testing.T) {
 
 	defer mockDB.Close()
 	db := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewRepository(db)
+	r := NewAdvertRepository(db)
 
 	type args struct {
 		advert model.Advert
@@ -92,7 +92,7 @@ func TestGetAdvertById(t *testing.T) {
 
 	defer mockDB.Close()
 	db := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewRepository(db)
+	r := NewAdvertRepository(db)
 
 	type args struct {
 		advertId int
@@ -165,7 +165,7 @@ func TestGetAdvertList(t *testing.T) {
 
 	defer mockDB.Close()
 	db := sqlx.NewDb(mockDB, "sqlmock")
-	r := NewRepository(db)
+	r := NewAdvertRepository(db)
 
 	type args struct {
 		page        int
