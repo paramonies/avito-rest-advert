@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  rest-api-server:
+    build: ./
+    command: ./wait-for-postgres.sh db ./apiserver
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    ports:
+      - 5436:5432
