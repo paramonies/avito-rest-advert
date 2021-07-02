@@ -16,6 +16,12 @@ func init() {
 	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
 }
 
+// @title Advert Rest Service API
+// @version 1.0
+// @description Cервис для хранения и подачи объявлений
+
+// @host localhost:8080
+// @BasePath /
 func main() {
 	flag.Parse()
 	config := apiserver.NewConfig()
@@ -23,8 +29,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// // fmt.Println("!!!", config.DbName)
 
 	if err := apiserver.Start(config); err != nil {
 		log.Fatal(err)

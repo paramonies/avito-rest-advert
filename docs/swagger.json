@@ -1,0 +1,284 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Cервис для хранения и подачи объявлений",
+        "title": "Advert Rest Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/create": {
+            "post": {
+                "description": "Cоздание нового объявления",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Advert"
+                ],
+                "summary": "создать объявление",
+                "operationId": "create-advert",
+                "parameters": [
+                    {
+                        "description": "Advert info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.InputAdvert"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateMessageOk"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateMessage400"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateMessage500"
+                        }
+                    }
+                }
+            }
+        },
+        "/get/{id}": {
+            "get": {
+                "description": "Получить объявление по id",
+                "consumes": [
+                    "text/html"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Advert"
+                ],
+                "summary": "получить объявление",
+                "operationId": "get-advert-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Advert ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "description",
+                            "pictures"
+                        ],
+                        "type": "string",
+                        "description": "Additional Advert fields in response",
+                        "name": "fields",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetMessageOk"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetMessage400"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetMessage500"
+                        }
+                    }
+                }
+            }
+        },
+        "/list": {
+            "get": {
+                "description": "Получить список объявлений по номеру страницы. На одной странице должно присутствовать 10 объявлений",
+                "consumes": [
+                    "text/html"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Advert"
+                ],
+                "summary": "получить список объявлений",
+                "operationId": "get-advert",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "price_desc",
+                            "price_asc",
+                            "createdat_desc",
+                            "createdat_asc"
+                        ],
+                        "type": "string",
+                        "description": "Order field and order destination",
+                        "name": "order_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handler.ListMessageOk"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ListMessage500"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.CreateMessage400": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "invalid input body"
+                }
+            }
+        },
+        "handler.CreateMessage500": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "internal server error"
+                }
+            }
+        },
+        "handler.CreateMessageOk": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "handler.GetMessage400": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "advertisement id must be integer"
+                }
+            }
+        },
+        "handler.GetMessage500": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "internal server error"
+                }
+            }
+        },
+        "handler.GetMessageOk": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "name-desc"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "name-test"
+                },
+                "pictures": {
+                    "type": "string",
+                    "example": "avito/files/ad1,avito/files/ad2,avito/files/ad3"
+                },
+                "price": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.InputAdvert": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "name-desc"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "name-test"
+                },
+                "pictures": {
+                    "type": "string",
+                    "example": "avito/files/ad1,avito/files/ad2,avito/files/ad3"
+                },
+                "price": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.ListMessage500": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "internal server error"
+                }
+            }
+        },
+        "handler.ListMessageOk": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "name-desc"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "name-test"
+                },
+                "pictures": {
+                    "type": "string",
+                    "example": "avito/files/ad1,avito/files/ad2,avito/files/ad3"
+                },
+                "price": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

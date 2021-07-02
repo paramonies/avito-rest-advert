@@ -1,0 +1,193 @@
+basePath: /
+definitions:
+  handler.CreateMessage400:
+    properties:
+      error:
+        example: invalid input body
+        type: string
+    type: object
+  handler.CreateMessage500:
+    properties:
+      error:
+        example: internal server error
+        type: string
+    type: object
+  handler.CreateMessageOk:
+    properties:
+      id:
+        example: 1
+        type: integer
+    type: object
+  handler.GetMessage400:
+    properties:
+      error:
+        example: advertisement id must be integer
+        type: string
+    type: object
+  handler.GetMessage500:
+    properties:
+      error:
+        example: internal server error
+        type: string
+    type: object
+  handler.GetMessageOk:
+    properties:
+      description:
+        example: name-desc
+        type: string
+      name:
+        example: name-test
+        type: string
+      pictures:
+        example: avito/files/ad1,avito/files/ad2,avito/files/ad3
+        type: string
+      price:
+        type: integer
+    type: object
+  handler.InputAdvert:
+    properties:
+      description:
+        example: name-desc
+        type: string
+      name:
+        example: name-test
+        type: string
+      pictures:
+        example: avito/files/ad1,avito/files/ad2,avito/files/ad3
+        type: string
+      price:
+        type: integer
+    type: object
+  handler.ListMessage500:
+    properties:
+      error:
+        example: internal server error
+        type: string
+    type: object
+  handler.ListMessageOk:
+    properties:
+      description:
+        example: name-desc
+        type: string
+      name:
+        example: name-test
+        type: string
+      pictures:
+        example: avito/files/ad1,avito/files/ad2,avito/files/ad3
+        type: string
+      price:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Cервис для хранения и подачи объявлений
+  title: Advert Rest Service API
+  version: "1.0"
+paths:
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: Cоздание нового объявления
+      operationId: create-advert
+      parameters:
+      - description: Advert info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.InputAdvert'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateMessageOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.CreateMessage400'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.CreateMessage500'
+      summary: создать объявление
+      tags:
+      - Advert
+  /get/{id}:
+    get:
+      consumes:
+      - text/html
+      description: Получить объявление по id
+      operationId: get-advert-id
+      parameters:
+      - description: Advert ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Additional Advert fields in response
+        enum:
+        - description
+        - pictures
+        in: query
+        name: fields
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetMessageOk'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.GetMessage400'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.GetMessage500'
+      summary: получить объявление
+      tags:
+      - Advert
+  /list:
+    get:
+      consumes:
+      - text/html
+      description: Получить список объявлений по номеру страницы. На одной странице
+        должно присутствовать 10 объявлений
+      operationId: get-advert
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Order field and order destination
+        enum:
+        - price_desc
+        - price_asc
+        - createdat_desc
+        - createdat_asc
+        in: query
+        name: order_by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.ListMessageOk'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ListMessage500'
+      summary: получить список объявлений
+      tags:
+      - Advert
+swagger: "2.0"

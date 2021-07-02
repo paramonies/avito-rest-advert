@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/paramonies/avito-rest-advert/internal/app/model"
 	"github.com/paramonies/avito-rest-advert/internal/app/service"
+
+	_ "github.com/paramonies/avito-rest-advert/docs"
+	"github.com/swaggo/gin-swagger"              // gin-swagger middleware
+	"github.com/swaggo/gin-swagger/swaggerFiles" // swagger embed files
 )
 
 type Handler struct {
@@ -21,10 +25,7 @@ func NewHandler(service service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/user/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		c.String(http.StatusOK, "Hello %s", name)
-	})
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.POST("/create", h.createAdvert)
 	router.GET("/get/:id", h.getAdvertById)
@@ -33,6 +34,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	return router
 }
 
+// @Summary создать объявление
+// @Tags Advert
+// @Description Cоздание нового объявления
+// @ID create-advert
+// @Accept  json
+// @Produce  json
+// @Param input body InputAdvert true "Advert info"
+// @Success 200 {object} CreateMessageOk
+// @Failure 400 {object} CreateMessage400
+// @Failure 500 {object} CreateMessage500
+// @Router /create [post]
 func (h *Handler) createAdvert(ctx *gin.Context) {
 	var input model.Advert
 
@@ -52,6 +64,18 @@ func (h *Handler) createAdvert(ctx *gin.Context) {
 	})
 }
 
+// @Summary получить объявление
+// @Tags Advert
+// @Description Получить объявление по id
+// @ID get-advert-id
+// @Accept  html
+// @Produce  json
+// @Param id path int true "Advert ID"
+// @Param fields query string false "Additional Advert fields in response" Enums(description, pictures)
+// @Success 200 {object} GetMessageOk
+// @Failure 400 {object} GetMessage400
+// @Failure 500 {object} GetMessage500
+// @Router /get/{id} [get]
 func (h *Handler) getAdvertById(ctx *gin.Context) {
 	//..../get/:id?fields=description,pictures
 	id := ctx.Param("id")
@@ -88,6 +112,17 @@ func (h *Handler) getAdvertById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, advert)
 }
 
+// @Summary получить список объявлений
+// @Tags Advert
+// @Description Получить список объявлений по номеру страницы. На одной странице должно присутствовать 10 объявлений
+// @ID get-advert
+// @Accept  html
+// @Produce  json
+// @Param page query int false "Page number"
+// @Param order_by query string false "Order field and order destination" Enums(price_desc, price_asc, createdat_desc, createdat_asc)
+// @Success 200 {object} ListMessageOk1
+// @Failure 500 {object} ListMessage500
+// @Router /list [get]
 func (h *Handler) getList(ctx *gin.Context) {
 	//..../list?page=2&order_by=createdat_desc
 	pageStr := ctx.Query("page")
