@@ -1,8 +1,12 @@
 package apiserver
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -17,15 +21,34 @@ func Start(config *Config) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 
 	repo := repository.NewAdvertRepository(db)
 	service := service.NewAdvertService(repo)
 	handler := handler.NewHandler(service)
 
 	srv := new(Server)
-	if err := srv.Run("8080", handler.InitRoutes()); err != nil {
-		log.Fatalf("error occured while running http server: %s", err.Error())
+
+	go func() {
+		if err := srv.Run("8080", handler.InitRoutes()); err != nil {
+			log.Fatalf("error occured while running http server: %s", err.Error())
+		}
+	}()
+
+	log.Print("Server Started on :8080")
+
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	log.Print("API Server Shutting Down")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		log.Fatalf("error occured on server shutting down: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		log.Fatalf("error occured on db connection close: %s", err.Error())
 	}
 
 	return nil
