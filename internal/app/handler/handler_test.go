@@ -248,7 +248,19 @@ func TestHandler_getList(t *testing.T) {
 				s.EXPECT().GetAdvertList(1, "createdat_desc").Return([]model.Advert{}, errors.New("something went wrong"))
 			},
 			expectedResponseCode: 500,
-			expectedResponseBody: `{"error":"something went wrong"}`},
+			expectedResponseBody: `{"error":"something went wrong"}`,
+		},
+		{
+			name:         "Records not found",
+			inputURL:     "/list?page=2",
+			inputPage:    2,
+			inputOrderBy: "createdat_desc",
+			mockBehavior: func(s *mock.MockService, page int, orderBy string) {
+				s.EXPECT().GetAdvertList(2, "createdat_desc").Return([]model.Advert{}, nil)
+			},
+			expectedResponseCode: 404,
+			expectedResponseBody: `{"error":"advertisements not found"}`,
+		},
 	}
 
 	for _, test := range tests {

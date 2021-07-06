@@ -49,7 +49,7 @@ func (r *AdvertRepository) GetAdvertById(advertId int) (model.Advert, error) {
 
 func (r *AdvertRepository) GetAdvertList(page int, orderField string, orderDirect string) ([]model.Advert, error) {
 	var adverts []model.Advert
-	query := fmt.Sprintf("SELECT name, price, pictures FROM %s  ORDER BY %s %s  LIMIT 3 OFFSET ($1-1)*3", ADVERTSTABLE, orderField, orderDirect)
+	query := fmt.Sprintf("SELECT name, price, pictures FROM %s  ORDER BY %s %s  LIMIT 10 OFFSET ($1-1)*10", ADVERTSTABLE, orderField, orderDirect)
 	if err := r.DB.Select(&adverts, query, page); err != nil {
 		return nil, err
 	}

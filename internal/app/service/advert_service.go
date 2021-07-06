@@ -37,7 +37,24 @@ func (s *AdvertService) GetAdvertById(advertId int, fields []string) (model.Adve
 func (s *AdvertService) GetAdvertList(page int, orderBy string) ([]model.Advert, error) {
 	order := strings.Split(orderBy, "_")
 	orderField, orderDirect := order[0], order[1]
-	return s.repo.GetAdvertList(page, orderField, orderDirect)
+
+	adverts, err := s.repo.GetAdvertList(page, orderField, orderDirect)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, advert := range adverts {
+		if advert.Pictures != "" {
+			advert.MainPicture = strings.Split(advert.Pictures, ",")[0]
+		} else {
+			advert.MainPicture = ""
+		}
+
+		advert.Pictures = ""
+		adverts[i] = advert
+	}
+
+	return adverts, nil
 }
 
 func validate(advert model.Advert) error {

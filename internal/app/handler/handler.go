@@ -10,7 +10,7 @@ import (
 	"github.com/paramonies/avito-rest-advert/internal/app/service"
 
 	_ "github.com/paramonies/avito-rest-advert/docs"
-	"github.com/swaggo/gin-swagger"              // gin-swagger middleware
+	ginSwagger "github.com/swaggo/gin-swagger"   // gin-swagger middleware
 	"github.com/swaggo/gin-swagger/swaggerFiles" // swagger embed files
 )
 
@@ -121,6 +121,7 @@ func (h *Handler) getAdvertById(ctx *gin.Context) {
 // @Param page query int false "Page number"
 // @Param order_by query string false "Order field and order destination" Enums(price_desc, price_asc, createdat_desc, createdat_asc)
 // @Success 200 {object} ListMessageOk1
+// @Failure 404 {object} ListMessage404
 // @Failure 500 {object} ListMessage500
 // @Router /list [get]
 func (h *Handler) getList(ctx *gin.Context) {
@@ -148,6 +149,11 @@ func (h *Handler) getList(ctx *gin.Context) {
 	adverts, err := h.service.GetAdvertList(page, orderBy)
 	if err != nil {
 		SendErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if len(adverts) == 0 {
+		SendErrorResponse(ctx, http.StatusNotFound, "advertisements not found")
 		return
 	}
 
