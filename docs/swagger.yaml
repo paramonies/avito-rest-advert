@@ -33,7 +33,10 @@ definitions:
   handler.GetMessageOk:
     properties:
       description:
-        example: name-desc
+        example: desc-test
+        type: string
+      main-picture:
+        example: avito/files/ad1
         type: string
       name:
         example: name-test
@@ -42,12 +45,13 @@ definitions:
         example: avito/files/ad1,avito/files/ad2,avito/files/ad3
         type: string
       price:
+        example: 1000
         type: integer
     type: object
   handler.InputAdvert:
     properties:
       description:
-        example: name-desc
+        example: desc-test
         type: string
       name:
         example: name-test
@@ -56,7 +60,14 @@ definitions:
         example: avito/files/ad1,avito/files/ad2,avito/files/ad3
         type: string
       price:
+        example: 1000
         type: integer
+    type: object
+  handler.ListMessage404:
+    properties:
+      error:
+        example: advertisements not found
+        type: string
     type: object
   handler.ListMessage500:
     properties:
@@ -66,16 +77,14 @@ definitions:
     type: object
   handler.ListMessageOk:
     properties:
-      description:
-        example: name-desc
+      main-picture:
+        example: avito/files/ad1
         type: string
       name:
         example: name-test
         type: string
-      pictures:
-        example: avito/files/ad1,avito/files/ad2,avito/files/ad3
-        type: string
       price:
+        example: 1000
         type: integer
     type: object
 host: localhost:8080
@@ -183,6 +192,10 @@ paths:
             items:
               $ref: '#/definitions/handler.ListMessageOk'
             type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ListMessage404'
         "500":
           description: Internal Server Error
           schema:

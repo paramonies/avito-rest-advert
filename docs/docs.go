@@ -170,6 +170,12 @@ var doc = `{
                             }
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ListMessage404"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -231,7 +237,11 @@ var doc = `{
             "properties": {
                 "description": {
                     "type": "string",
-                    "example": "name-desc"
+                    "example": "desc-test"
+                },
+                "main-picture": {
+                    "type": "string",
+                    "example": "avito/files/ad1"
                 },
                 "name": {
                     "type": "string",
@@ -242,7 +252,8 @@ var doc = `{
                     "example": "avito/files/ad1,avito/files/ad2,avito/files/ad3"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1000
                 }
             }
         },
@@ -251,7 +262,7 @@ var doc = `{
             "properties": {
                 "description": {
                     "type": "string",
-                    "example": "name-desc"
+                    "example": "desc-test"
                 },
                 "name": {
                     "type": "string",
@@ -262,7 +273,17 @@ var doc = `{
                     "example": "avito/files/ad1,avito/files/ad2,avito/files/ad3"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1000
+                }
+            }
+        },
+        "handler.ListMessage404": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "advertisements not found"
                 }
             }
         },
@@ -278,20 +299,17 @@ var doc = `{
         "handler.ListMessageOk": {
             "type": "object",
             "properties": {
-                "description": {
+                "main-picture": {
                     "type": "string",
-                    "example": "name-desc"
+                    "example": "avito/files/ad1"
                 },
                 "name": {
                     "type": "string",
                     "example": "name-test"
                 },
-                "pictures": {
-                    "type": "string",
-                    "example": "avito/files/ad1,avito/files/ad2,avito/files/ad3"
-                },
                 "price": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1000
                 }
             }
         }
