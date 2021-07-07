@@ -10,6 +10,8 @@ services:
       - db
     environment:
       - POSTGRES_PASSWORD=qwerty
+    container_name: api-server
+    restart: on-failure
 
   db:
     restart: always
@@ -20,3 +22,5 @@ services:
       - POSTGRES_PASSWORD=qwerty
     ports:
       - 5436:5432
+    container_name: db
+    restart: on-failure

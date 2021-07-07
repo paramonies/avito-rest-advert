@@ -6,10 +6,7 @@ WORKDIR /app
 COPY ./ ./
 RUN go mod download
 
-# install psql
-RUN apk update && apk add --no-cache postgresql-client
-#RUN apt-get update
-#RUN apt-get -y install postgresql-client
+RUN apk update && apk upgrade && apk add --no-cache postgresql-client make gcc musl-dev
 
 # make wait-for-postgres.sh executable
 RUN chmod +x wait-for-postgres.sh
